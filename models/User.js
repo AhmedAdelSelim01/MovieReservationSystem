@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const userSchema = new mongoose.Schema(
   {
     name: {
-      tyre: String,
+      type: String,
       required: true,
     },
     email: {
@@ -26,20 +26,15 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-userSchema.pre("save", async function (next) {
+userSchema.pre("save", async function () {
   // Only hash the password if it has been modified (or is new)
   if (!this.isModified("password")) {
-    return next();
-  } else {
-    try {
-      // generate a salt and hash the password using the salt
-      const salt = await bcrypt.genSalt(10);
-      this.password = await bcrypt.hash(this.password, salt);
-      next();
-    } catch (error) {
-      return next(error);
-    }
+    return;
   }
+
+  // Generate a salt and hash the password using the salt
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // that for comparing the entered password with the hashed password in the database(at login)
