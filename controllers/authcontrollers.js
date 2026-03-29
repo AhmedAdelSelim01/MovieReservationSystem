@@ -38,9 +38,40 @@ export const loginUser = catchAsync(async (req, res, next) => {
     },
   );
 
+  // save the token in a httpOnly cookie for security
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
   res.status(200).json({
     message: "User logged in successfully",
     token,
     user: { id: user._id, name: user.name, email: user.email },
   });
 });
+
+export const getCurrentUser = catchAsync(async (req, res, next) => {
+  if (!req.user?._id) {
+    return next(new AppError("Not authorized, no token", 401));
+  }
+
+  // get the user from the database
+  const user = await User.findById(req.user._id).select("-password");
+  if (!user) {
+    return next(new AppError("User not found", 404));
+  }
+  res.status(200).json({ user });
+});
+
+export const logoutUser = catchAsync(async (req, res) => {
+  // Invalidate the token on the client side by setting it to null or an empty string
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+  });
+  res.status(200).json({ message: "User logged out successfully" });
+});
+
+// update user profile
