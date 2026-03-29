@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { protect } from "../middlewares/auth.js";
+import { reservationValidator } from "../validators/reservationValidator.js";
+import { validate } from "../middlewares/validate.js";
 import {
   createReservation,
   getUserReservations,
@@ -7,7 +9,7 @@ import {
 
 const router = Router();
 
-router.post("/", protect, createReservation);
+router.post("/", protect, reservationValidator, validate, createReservation);
 router.get("/", protect, getUserReservations);
 
 export default router;
