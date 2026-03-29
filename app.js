@@ -2,6 +2,8 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./router/authRoutes.js";
 import movieRoutes from "./router/movieRoutes.js";
+import showtimeRoutes from "./router/showtimeRoutes.js";
+import reservationRoutes from "./router/reservationRoutes.js";
 
 const app = express();
 app.use(cors());
@@ -14,6 +16,10 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 
 app.use("/api/movies", movieRoutes);
+
+app.use("/api/showtimes", showtimeRoutes);
+
+app.use("/api/reservations", reservationRoutes);
 
 // erroe handling middleware
 app.use((err, req, res, next) => {
