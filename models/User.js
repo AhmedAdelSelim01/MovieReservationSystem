@@ -1,25 +1,40 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name is required"],
+      trim: true,
+      minlength: [3, "Name must be at least 3 characters"],
+      maxlength: [50, "Name must not exceed 50 characters"],
     },
+
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
-      matchs: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      lowercase: true,
+      trim: true,
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email format"],
     },
+
     password: {
       type: String,
-      required: true,
-      matchs: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-      min: [6, "Password must be at least 6 characters long"],
+      required: [true, "Password is required"],
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
     },
-    role: { type: String, enum: ["user", "admin"], default: "user" },
+
+    role: {
+      type: String,
+      enum: {
+        values: ["user", "admin"],
+        message: "Role must be either user or admin",
+      },
+      default: "user",
+    },
   },
   {
     timestamps: true,
@@ -42,5 +57,4 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
-export default User;
+export default mongoose.model("User", userSchema);

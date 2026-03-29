@@ -1,10 +1,12 @@
 import express from "express";
+import { createUserValidator } from "../validators/userValidator.js";
+import { validate } from "../middlewares/validate.js";
 import { loginUser, registerUser } from "../controllers/authControllers.js";
 import { protect } from "../middlewares/auth.js";
 const router = express.Router();
 
 // Register route
-router.post("/register", registerUser);
+router.post("/register", validate, createUserValidator, registerUser);
 router.post("/login", loginUser);
 
 router.get("/protected", protect, (req, res) => {
