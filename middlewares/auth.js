@@ -3,8 +3,10 @@ import User from "../models/User.js";
 import AppError from "../utils/AppError.js";
 
 export const protect = async (req, res, next) => {
-  // get the token from the header
-  const token = req.headers.authorization?.split(" ")[1];
+  // Prefer Bearer token; fallback to cookie token if available.
+  const headerToken = req.headers.authorization?.split(" ")[1];
+  const cookieToken = req.cookies?.token;
+  const token = headerToken || cookieToken;
 
   if (!token) {
     return next(new AppError("Not authorized, no token", 401));
