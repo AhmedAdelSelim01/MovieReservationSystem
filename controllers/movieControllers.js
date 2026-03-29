@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import Movie from "../models/Movie.js";
 import catchAsync from "../utils/catchAsync.js";
 
+const MOVIE_UPDATABLE_FIELDS = ["title", "description", "duration", "genre"];
+
 // Create a new movie
 export const createMovie = catchAsync(async (req, res) => {
   if (!req.body || Object.keys(req.body).length === 0) {
@@ -60,13 +62,38 @@ export const getMovieById = catchAsync(async (req, res) => {
 // Update movie by id
 export const updateMovieById = catchAsync(async (req, res) => {
   const { id } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: "Invalid movie ID format" });
   }
-  const movie = await Movie.findByIdAndUpdate(id, req.body, { new: true });
+
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({ message: "No data provided to update" });
+  }
+
+  // Whitelist only fields that are allowed to be updated from this endpoint.
+  const filteredBody = Object.fromEntries(
+    Object.entries(req.body).filter(([field, value]) => {
+      return MOVIE_UPDATABLE_FIELDS.includes(field) && value !== undefined;
+    }),
+  );
+
+  if (Object.keys(filteredBody).length === 0) {
+    return res.status(400).json({
+      message: "No valid fields provided to update",
+      allowedFields: MOVIE_UPDATABLE_FIELDS,
+    });
+  }
+
+  const movie = await Movie.findByIdAndUpdate(id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
+
   if (!movie) {
     return res.status(404).json({ message: "Movie not found" });
   }
+
   res.status(200).json({ success: true, movie });
 });
 
