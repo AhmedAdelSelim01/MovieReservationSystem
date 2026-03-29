@@ -1,13 +1,24 @@
 import express from "express";
 import { createUserValidator } from "../validators/userValidator.js";
 import { validate } from "../middlewares/validate.js";
-import { loginUser, registerUser } from "../controllers/authControllers.js";
+import {
+  getCurrentUser,
+  loginUser,
+  logoutUser,
+  registerUser,
+} from "../controllers/authControllers.js";
 import { protect } from "../middlewares/auth.js";
 const router = express.Router();
 
 // Register route
 router.post("/register", validate, createUserValidator, registerUser);
+// Login route
 router.post("/login", loginUser);
+// lougout route
+router.post("/logout", logoutUser);
+
+//get current user route
+router.get("/me", protect, getCurrentUser);
 
 router.get("/protected", protect, (req, res) => {
   res.status(200).json({ message: "This is a protected route" });
