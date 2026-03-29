@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import AppError from "../utils/AppError.js";
 
 export const protect = async (req, res, next) => {
   // get the token from the header
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "Not authorized, no token" });
+    return next(new AppError("Not authorized, no token", 401));
   }
   try {
     // verify the token
@@ -17,14 +18,12 @@ export const protect = async (req, res, next) => {
     req.user = await User.findById(decoded.id).select("-password");
 
     if (!req.user) {
-      return res
-        .status(401)
-        .json({ message: "Not authorized, user not found" });
+      return next(new AppError("Not authorized, user not found", 401));
     }
 
     next();
   } catch (error) {
     console.error(error);
-    res.status(401).json({ message: "Not authorized, token failed" });
+    next(new AppError("Not authorized, token failed", 401));
   }
 };
