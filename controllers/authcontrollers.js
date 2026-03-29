@@ -1,13 +1,14 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import catchAsync from "../utils/catchAsync.js";
+import AppError from "../utils/AppError.js";
 
 export const registerUser = catchAsync(async (req, res, next) => {
   const { name, email, password, role } = req.body;
   // Check if user already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(400).json({ message: "User already exists" });
+    return next(new AppError("User already exists", 400));
   }
   // Create new user
   const user = await User.create({ name, email, password, role });
@@ -22,12 +23,12 @@ export const loginUser = catchAsync(async (req, res, next) => {
   // Check if user exists
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
-    return res.status(400).json({ message: "Invalid email or password" });
+    return next(new AppError("Invalid email or password", 400));
   }
   // Check if password is correct
   const isMatch = await user.matchPassword(password);
   if (!isMatch) {
-    return res.status(400).json({ message: "Invalid email or password" });
+    return next(new AppError("Invalid email or password", 400));
   }
   const token = jwt.sign(
     { id: user._id, role: user.role },

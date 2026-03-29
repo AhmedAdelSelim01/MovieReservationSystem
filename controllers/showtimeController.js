@@ -1,13 +1,12 @@
 import Showtime from "../models/Showtime.js";
 import catchAsync from "../utils/catchAsync.js";
+import AppError from "../utils/AppError.js";
 
 // Create a new showtime
-export const createShowtime = catchAsync(async (req, res) => {
+export const createShowtime = catchAsync(async (req, res, next) => {
   const { movie, startTime, availableSeats, totalSeats } = req.body;
   if (availableSeats > totalSeats) {
-    return res.status(400).json({
-      message: "Available seats cannot exceed total seats",
-    });
+    return next(new AppError("Available seats cannot exceed total seats", 400));
   }
   const showtime = await Showtime.create({
     movie,

@@ -2,19 +2,20 @@ import mongoose from "mongoose";
 import Reservation from "../models/Reservation.js";
 import showtime from "../models/Showtime.js";
 import catchAsync from "../utils/catchAsync.js";
+import AppError from "../utils/AppError.js";
 
 // `createReservation` controller to handle reservation creation
-export const createReservation = catchAsync(async (req, res) => {
+export const createReservation = catchAsync(async (req, res, next) => {
   const { showtime: showtimeId, seatsBooked } = req.body;
 
   // find the showtime
   const showtimeDoc = await showtime.findById(showtimeId);
   if (!showtimeDoc) {
-    return res.status(404).json({ message: "Showtime not found" });
+    return next(new AppError("Showtime not found", 404));
   }
   //check if there are enough seats available
   if (showtimeDoc.availableSeats < seatsBooked) {
-    return res.status(400).json({ message: "Not enough seats available" });
+    return next(new AppError("Not enough seats available", 400));
   }
   const reservation = await Reservation.create({
     user: req.user._id,
