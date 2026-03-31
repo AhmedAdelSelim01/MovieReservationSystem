@@ -1,0 +1,118 @@
+.hero {
+  min-height: 70vh;
+  background: url('https://image.tmdb.org/t/p/original/wQ53sO5n9LCFbssV3oQ4CuajL1L.jpg') no-repeat
+    center/cover;
+  position: relative;
+  color: white;
+  margin: 0;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0, 0, 0, 0.25), transparent 45%),
+    linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.88) 0%,
+      rgba(0, 0, 0, 0.55) 40%,
+      rgba(0, 0, 0, 0.2) 70%
+    );
+  z-index: 0;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, rgba(20, 20, 20, 0), #141414 85%);
+  z-index: 0;
+}
+
+.overlay {
+  height: 100%;
+  padding: clamp(24px, 5vw, 64px) clamp(16px, 5vw, 40px);
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  max-width: 560px;
+}
+
+.tag {
+  color: #ff4d4d;
+  margin: 0 0 10px;
+}
+
+h1 {
+  font-size: clamp(2.2rem, 7vw, 4.4rem);
+  margin: 0 0 10px;
+  line-height: 0.95;
+}
+
+h1 span {
+  color: #ff4d4d;
+}
+
+.description {
+  max-width: 500px;
+  margin: 0 0 20px;
+  color: #ccc;
+  font-size: 1.15rem;
+  line-height: 1.45;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttons button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.primary {
+  background: #ff4d4d;
+  color: white;
+}
+
+.secondary {
+  background: transparent;
+  border: 1px solid white;
+  color: white;
+}
+
+.secondary:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 56vh;
+  }
+
+  .buttons {
+    flex-wrap: wrap;
+  }
+
+  .buttons button {
+    padding: 10px 14px;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+}
