@@ -1,0 +1,16 @@
+<section class="section">
+  <div class="header">
+    <h2>Upcoming Releases</h2>
+    <a href="#" class="calendar">Release Calendar</a>
+  </div>
+
+  <div class="upcoming">
+    <article class="card" *ngFor="let movie of upcoming">
+      <img [src]="movie.image" [alt]="movie.title" />
+      <div class="details">
+        <p class="date">Coming {{ movie.date }}</p>
+        <h3>{{ movie.title }}</h3>
+      </div>
+    </article>
+  </div>
+</section>
