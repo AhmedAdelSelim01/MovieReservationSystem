@@ -1,11 +1,14 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Hero } from './components/hero/hero';
+import { NowShowing } from './components/now-showing/now-showing';
+import { Upcoming } from "./components/upcoming/upcoming";
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [Hero, NowShowing, Upcoming],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
   protected readonly title = signal('movie-app');
