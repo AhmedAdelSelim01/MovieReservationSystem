@@ -1,0 +1,10 @@
+<section class="section">
+  <div class="header">
+    <h2>Now Showing</h2>
+    <a href="#" class="view-all">View All</a>
+  </div>
+
+  <div class="movies" aria-label="Now showing movies">
+    <app-movie-card *ngFor="let movie of movies" [movie]="movie"> </app-movie-card>
+  </div>
+</section>
