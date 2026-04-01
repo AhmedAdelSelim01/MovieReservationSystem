@@ -1,0 +1,5 @@
+/* Auth layout styling */
+:host {
+  display: block;
+  height: 100vh;
+}
